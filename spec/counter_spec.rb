@@ -14,3 +14,6 @@ RSpec.describe Counter do
       expect(result).to eq "Counted to 0 so far."
   end
 end
+
+
+
