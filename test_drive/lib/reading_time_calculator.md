@@ -26,11 +26,11 @@ reading_time_calculator("")
 # => 0
 
 # 2
-reading_time_calculator("one")
+reading_time_calculator(TWO_HUNDRED_WORDS)
 # => 1
 
 # 3
-reading_time_calculator(TWO_HUNDRED_WORDS)
+reading_time_calculator(FOUR_HUNDRED_WORDS)
 # => 2
 
 # 4
