@@ -55,4 +55,35 @@ RSpec.describe GrammarStats do
       end
     end
   end
+
+  describe '#percentage_good' do
+    context 'given an even number of text checks pass and fail' do
+      it 'returns 50 percent' do
+        grammar_stats = GrammarStats.new
+        grammar_stats.check("hello world")
+        grammar_stats.check("Hello world.")
+        expect(grammar_stats.percentage_good).to eq "50%"
+      end
+    end
+
+    context 'given every text check passes' do
+      it 'returns 100 percent' do
+        grammar_stats = GrammarStats.new
+        grammar_stats.check("Hello world!")
+        grammar_stats.check("Hello world.")
+        grammar_stats.check("How are you?")
+        expect(grammar_stats.percentage_good).to eq "100%"
+      end
+    end
+
+    context 'given every text check fails' do
+      it 'returns 0 percent' do
+        grammar_stats = GrammarStats.new
+        grammar_stats.check("hello world")
+        grammar_stats.check("how are you")
+        grammar_stats.check("my name is eliza")
+        expect(grammar_stats.percentage_good).to eq "0%"
+      end
+    end
+  end
 end
