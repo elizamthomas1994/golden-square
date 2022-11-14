@@ -1,4 +1,5 @@
 require 'diary'
+require 'diary_entry'
 
 RSpec.describe Diary do
   context 'when we add a diary entry' do
