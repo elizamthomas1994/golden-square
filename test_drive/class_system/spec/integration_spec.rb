@@ -57,6 +57,7 @@ describe 'best reading time entry behaviour' do
     diary.add(diary_entry_1)
     expect { diary.find_best_entry_for_reading_time(0,1) }.to raise_error "WPM must be positive."
   end
+  
   context 'where we just have one entry and it is readable in the time' do
     it 'returns that entry' do
       diary = Diary.new
