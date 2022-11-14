@@ -1,13 +1,10 @@
 require 'diary'
-require 'diary_entry'
 
 RSpec.describe Diary do
-  context 'when we add a diary entry' do
-    it 'adds diary entry to the diary' do
+  context 'initially' do
+    it 'takes empty list of entries' do
       diary = Diary.new
-      diary_entry = DiaryEntry.new("My Title", "My Contents")
-      diary.add(diary_entry)
-      expect(diary.all).to eq ["My Title", "My Contents"]
+      expect(diary.all).to eq []
     end
   end
 end

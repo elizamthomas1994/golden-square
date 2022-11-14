@@ -31,3 +31,4 @@ class DiaryEntry
     # what has already been read, until the contents is fully read.
     # The next call after that it should restart from the beginning.
   end
+end
