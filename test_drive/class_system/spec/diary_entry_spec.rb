@@ -46,5 +46,36 @@ RSpec.describe DiaryEntry do
       expect(diary_entry.reading_time(2)).to eq 3
     end
   end
-  
+
+  describe '#reading_chunk' do
+    context 'given a contents that is fully readable in the given time' do
+      it 'returns the full contents' do
+        diary_entry = DiaryEntry.new("my_title", ("Hello " * 200))
+        expect(diary_entry.reading_chunk(100, 5)).to eq ("Hello " * 200)
+      end
+    end
+
+    context 'given a contents that is not fully readable in the given time' do
+      it 'returns a portion of the contents' do
+        diary_entry = DiaryEntry.new("my_title", ("Hello " * 10))
+        chunk = diary_entry.reading_chunk(3, 3)
+        expect(chunk).to eq ("Hello " * 9)
+      end
+
+      it 'returns the next portion of contents when called again' do
+        diary_entry = DiaryEntry.new('my_title', ("Hello " * 10))
+        diary_entry.reading_chunk(3, 3)
+        chunk = diary_entry.reading_chunk(3, 3)
+        expect(chunk).to eq "Hello "
+      end
+
+      it 'restarts the reading of the whole text' do
+        diary_entry = DiaryEntry.new('my_title', ("Hello " * 10))
+        diary_entry.reading_chunk(3, 3)
+        diary_entry.reading_chunk(3, 3)
+        chunk = diary_entry.reading_chunk(3, 3)
+        expect(chunk).to eq ("Hello " * 9)
+      end
+    end
+  end
 end
