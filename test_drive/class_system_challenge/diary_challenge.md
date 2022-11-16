@@ -51,10 +51,6 @@ class Diary
     # to, but not over, the length that the user could read in the minutes they
     # have available given their reading speed.
   end
-  
-  def find_contacts_in_entries(contacts)
-    # 'contacts' is an instance of contact
-  end
 end
 
 class DiaryEntry
@@ -105,30 +101,21 @@ class TodoList
 end
 
 class Todo
-  attr_accessor :todo
-
   def initalize(todo) 
     #todo is a string denoting item to be done
   end
-end
 
-class ContactList(contacts) # contacts is a string denoting mobile phone numbers
-  def initialize
-  end
-
-  def add(contacts)
-    # contacts is an instance of contact
-  end
-
-  def list
-    # returns all contacts given
+  def todo
+    #returns todo
   end
 end
 
-class Contact
-  def initialize(name, number)
-    # name is a string representing the name of the contact
-    # number is an integer representing the contact phone number
+class ContactExtractor
+  def initialize(diary) #diary represents diary object
+  end
+
+  def extract_numbers
+    # iterates over diary entries and extracts contact numbers from them
   end
 end
 ```
@@ -209,28 +196,23 @@ diary.add(entry_1)
 diary.add(entry_2)
 expect(diary.find_best_entry_for_reading_time(200,2)).to eq(entry_2)
 
-# Diary#find_contacts_in_entries returns all entries containing contact number information
+# ContractExtractor#extract_numbers returns all entries containing contact number information
 diary = Diary.new 
-entry_1 = DiaryEntry.new('title1','random stuff 999')
-entry_2 = DiaryEntry.new('title2','words')
-entry_3 = DiaryEntry.new('title3','random 111 words')
-diary.add(entry_1)
-diary.add(entry_2)
-diary.add(entry_3)
-contacts_list = ContactList.new 
-contact_1 = Contact.new('Bob', 999)
-contact_2 = Contact.new('Jim' 111)
-contacts_list.add(contact_1)
-contacts_list.add(contact_2)
-expected = [contact_1, contact_2]
-expect(diary.find_contacts_in_entries(contacts_list)).to eq(expected)
+contact_list = ContactExtractor.new(diary)
+entry_1 = DiaryEntry.new('title1', 'I rang 07123456345')
+entry_2 = DiaryEntry.new('title2', 'the number 07234234234 called me')
+entry_3 = DiaryEntry.new('title3', '07555444333 texted her')
+expect(contact_list.extract_numbers).to eq[
+  '07123456345'
+  '07234234234'
+  '07555444333'
+]
 
-# Diary#find_contacts_in_entries returns error when called on an empty diary
+# ContractExtractor#extract_numbers returns error when called on an empty diary
 diary = Diary.new 
-contact_list = ContactList.new 
-contact = Contact.new('Jim', 999)
-contact_list.add(contact)
-expect{ diary.find_contacts_in_entries(contact_list) }.to raise_error('Diary is empty')
+contact_list = ContactExtractor.new(diary) 
+expect{ contact_list.extract_numbers }.to raise_error('Diary is empty')
+
 ```
 
 4. Create Examples as Unit Tests
@@ -260,17 +242,9 @@ expect{ entry_1.reading_time(0) }.to raise_error('WPM must be positive')
 # Todo initialises an instance of Todo
 expect(Todo.new('Walk the dog')).to be_an_instance_of(Todo)
 
-# Todo#task returns the todo
+# Todo#todo returns the todo
 todo_1 = Todo.new('Walk the dog')
-expect(todo_1.task).to eq('Walk the dog')
-
-# Contact#name returns the name of the contact
-contact_1 = Contact.new('Jim', 999)
-expect(contact_1.name).to eq('Jim')
-
-# Contact#number returns the number of the contact
-contact_1 = Contact.new('Jim', 999)
-expect(contact_1.number).to eq(999)
+expect(todo_1.todo).to eq('Walk the dog')
 
 # Diary#all returns an empty list when no entries added
 diary = Diary.new 
@@ -287,11 +261,6 @@ expect{ diary.find_best_entry_for_reading_time(200, 5) }.to raise_error('Diary i
 # TodoList#all returns an empty list when no todos added
 todo_list = TodoList.new 
 expect(todo_list.all).to eq([])
-
-# ContactList#list returns an empty list when no todos added
-contacts = ContactList.new 
-expect(contacts.list).to eq([])
-
 ```
 
 5. Implement the Behaviour
