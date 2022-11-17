@@ -79,8 +79,6 @@ class DiaryEntry
 end
 
 class TodoList
-  attr_reader :todo_list
-
   def initialize
   end
   
@@ -137,7 +135,7 @@ todo_1 = Todo.new('Walk the dog')
 todo_2 = Todo.new('Get dressed')
 todo_list.add(todo_1)
 todo_list.add(todo_2)
-expect(todo_list.all).to eq([todo_1, todo_2])
+expect(todo_list.list).to eq([todo_1, todo_2])
 
 # TodoList#complete removes todos from the list
 todo_list = TodoList.new
@@ -146,7 +144,7 @@ todo_2 = Todo.new('Get dressed')
 todo_list.add(todo_1)
 todo_list.add(todo_2)
 todo_list.complete(todo_1)
-expect(todo_list.all).to eq([todo_2])
+expect(todo_list.list).to eq([todo_2])
 
 # TodoList#complete returns error if todo is not on list
 todo_list = TodoList.new
@@ -154,15 +152,7 @@ todo_1 = Todo.new('Walk the dog')
 todo_2 = Todo.new('Get dressed')
 todo_list.add(todo_1)
 todo_list.add(todo_2)
-expect{ todo_list.complete("Shop for groceries") }.to eq "Todo not recognised"
-
-# Contacts#all returns all contacts in the list
-contact_list = ContactList.new
-contact_1 = Contact.new('Bob', 999)
-contact_2 = Contact.new('Jim', 111)
-contact_list.add(contact_1)
-contact_list.add(contact_2)
-expect(contact_list.list).to eq([contact_1, contact_2])
+expect{ todo_list.complete("Shop for groceries") }.to raise_error "Todo not recognised"
 
 # Diary#reading_time returns a whole number integer for total reading time of the diary
 diary = Diary.new
@@ -196,25 +186,27 @@ diary.add(entry_1)
 diary.add(entry_2)
 expect(diary.find_best_entry_for_reading_time(200,2)).to eq(entry_2)
 
-# ContractExtractor#extract_numbers returns all entries containing contact number information
+# ContractExtractor#diary_searcher returns all contact numbers within diary entries
 diary = Diary.new 
-contact_list = ContactExtractor.new(diary)
 entry_1 = DiaryEntry.new('title1', 'I rang 07123456345')
 entry_2 = DiaryEntry.new('title2', 'the number 07234234234 called me')
 entry_3 = DiaryEntry.new('title3', '07555444333 texted her')
+Diary.add(entry_1)
+Diary.add(entry_2)
+Diary.add(entry_3)
+contact_list = ContactExtractor.new(diary)
 expect(contact_list.extract_numbers).to eq[
   '07123456345'
   '07234234234'
   '07555444333'
 ]
 
-# ContractExtractor#extract_numbers returns error when called on an empty diary
+# ContractExtractor#diary_searcher returns empty array when called on an empty diary
 diary = Diary.new 
 contact_list = ContactExtractor.new(diary) 
-expect{ contact_list.extract_numbers }.to raise_error('Diary is empty')
+expect(contact_list.extract_numbers).to eq []
 
 ```
-
 4. Create Examples as Unit Tests
 
 ```ruby 
@@ -227,18 +219,6 @@ expect(entry_1.count_words).to eq(0)
 entry_1 = DiaryEntry.new('title', 'hello ' * 10)
 expect(entry_1.count_words).to eq(10)
 
-# DiaryEntry#reading_time returns the num of minutes as an integer that it'll take the user to read the diary entry at a given wpm
-entry_1 = DiaryEntry.new('title', 'word ' * 200)
-expect(entry_1.reading_time(100)).to eq(2)
-
-# DiaryEntry#reading_time returns the num of minutes as an integer that it'll take the user to read the diary entry at a given wpm
-entry_1 = DiaryEntry.new('title', 'word ' * 430)
-expect(entry_1.reading_time(100)).to eq(5)
-
-# DiaryEntry#reading_time returns an error when wpm <= 0
-entry_1 = DiaryEntry.new('title', 'word ' * 430)
-expect{ entry_1.reading_time(0) }.to raise_error('WPM must be positive')
-
 # Todo initialises an instance of Todo
 expect(Todo.new('Walk the dog')).to be_an_instance_of(Todo)
 
@@ -250,17 +230,9 @@ expect(todo_1.todo).to eq('Walk the dog')
 diary = Diary.new 
 expect(diary.all).to eq([])
 
-# Diary#eading_time returns error when called on an empty diary
-diary = Diary.new 
-expect{ reading_time(5) }.to raise_error('Diary is empty')
-
-# Diary#find_best_entry_for_reading_time returns error when called on an empty diary
-diary = Diary.new 
-expect{ diary.find_best_entry_for_reading_time(200, 5) }.to raise_error('Diary is empty')
-
 # TodoList#all returns an empty list when no todos added
 todo_list = TodoList.new 
-expect(todo_list.all).to eq([])
+expect(todo_list.list).to eq([])
 ```
 
 5. Implement the Behaviour
