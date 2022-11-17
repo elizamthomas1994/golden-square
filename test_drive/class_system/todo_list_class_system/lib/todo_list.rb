@@ -25,5 +25,4 @@ class TodoList
       todo.mark_done!
     end
   end
-  
 end
